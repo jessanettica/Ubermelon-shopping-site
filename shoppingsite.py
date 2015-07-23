@@ -1,13 +1,11 @@
 """Ubermelon shopping application Flask server.
-
 Provides web interface for browsing melons, seeing detail about a melon, and
 put melons in a shopping cart.
-
 Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import model
@@ -46,7 +44,6 @@ def list_melons():
 @app.route("/melon/<int:id>")
 def show_melon(id):
     """Return page showing the details of a given melon.
-
     Show all info about a melon. Also, provide a button to buy that melon.
     """
 
@@ -73,6 +70,15 @@ def add_to_cart(id):
     When a melon is added to the cart, redirect browser to the shopping cart
     page and display a confirmation message: 'Successfully added to cart'.
     """
+
+    if 'cart' in session:
+        session['cart'].append(id)
+    else:
+        session['cart']=[id]
+
+    flash ("Added melon to cart!")
+
+    return redirect("/cart")
 
     # TODO: Finish shopping cart functionality
     #   - use session variables to hold cart list
@@ -109,7 +115,6 @@ def checkout():
 
     flash("Sorry! Checkout will be implemented in a future version.")
     return redirect("/melons")
-
 
 
 if __name__ == "__main__":
